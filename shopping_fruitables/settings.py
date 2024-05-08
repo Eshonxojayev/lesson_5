@@ -40,9 +40,11 @@ INSTALLED_APPS = [
     'products',
     'billing',
     'music',
+    'api',
     # framework
     'rest_framework',
     'rest_framework.authtoken',
+    'django_filters',
 ]
 
 MIDDLEWARE = [

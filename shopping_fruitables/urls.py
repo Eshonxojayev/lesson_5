@@ -13,6 +13,10 @@ urlpatterns = [
     path('', include('products.urls')),
     # path('', include('music.urls')),
     path('api/v1/', include('music.urls')),
+    path('api/v1/', include('api.urls')),
+    # path('api/v1/', include('customers.urls')),
+    # path('api/v1/', include('billing.urls')),
+    # path('api/v1/', include('products.urls')),
 
 ]
 
