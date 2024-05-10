@@ -1,6 +1,11 @@
 from django.shortcuts import render, redirect
 from django.views import View
-from .models import Customers
+from rest_framework.authentication import TokenAuthentication
+from .models import Country, City, Address, Customers
+from .serializers import CountrySerializer, CitySerializer, AddressSerializer, CustomersSerializer
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.pagination import LimitOffsetPagination
+from rest_framework import filters
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
@@ -8,6 +13,37 @@ from products.models import Category, Comment, Product, Cart
 
 # Create your views here.
 
+class CountryAPIView(ModelViewSet):
+    queryset = Country.objects.all()
+    serializer_class = CountrySerializer
+    pagination_class = LimitOffsetPagination
+    authentication_classes = (TokenAuthentication, )
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name',)
+
+class CityAPIView(ModelViewSet):
+    queryset = City.objects.all()
+    serializer_class = CitySerializer
+    pagination_class = LimitOffsetPagination
+    authentication_classes = (TokenAuthentication, )
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name',)
+
+class AddressAPIView(ModelViewSet):
+    queryset = Address.objects.all()
+    serializer_class = AddressSerializer
+    pagination_class = LimitOffsetPagination
+    authentication_classes = (TokenAuthentication, )
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name',)
+
+class CustomersAPIView(ModelViewSet):
+    queryset = Customers.objects.all()
+    serializer_class = CustomersSerializer
+    pagination_class = LimitOffsetPagination
+    authentication_classes = (TokenAuthentication, )
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name',)
 
 class LandingPageView(View):
     def get(self, request):
