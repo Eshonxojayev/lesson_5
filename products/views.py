@@ -1,9 +1,46 @@
 from django.shortcuts import render
 from django.views import View
+from rest_framework.authentication import TokenAuthentication
+from .serializers import ProductSerializer, CategorySerializer, CommentSerializer, CartSerializer
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.pagination import LimitOffsetPagination
+from rest_framework import filters
 from .models import Product, Category, Comment, Cart
 from customers.models import Customers
 from django.contrib.auth.models import User
 # Create your views here.
+
+class ProductAPIView(ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    pagination_class = LimitOffsetPagination
+    authentication_classes = (TokenAuthentication,)
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name', 'description')
+
+class CategoryAPIView(ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    pagination_class = LimitOffsetPagination
+    authentication_classes = (TokenAuthentication,)
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name', 'description')
+
+class CommentAPIView(ModelViewSet):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    pagination_class = LimitOffsetPagination
+    authentication_classes = (TokenAuthentication,)
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name', 'description')
+
+class CartAPIView(ModelViewSet):
+    queryset = Cart.objects.all()
+    serializer_class = CartSerializer
+    pagination_class = LimitOffsetPagination
+    authentication_classes = (TokenAuthentication,)
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name', 'description')
 
 
 class ProductListView(View):
