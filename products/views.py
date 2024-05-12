@@ -8,6 +8,9 @@ from rest_framework import filters
 from .models import Product, Category, Comment, Cart
 from customers.models import Customers
 from django.contrib.auth.models import User
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework import status
 # Create your views here.
 
 class ProductAPIView(ModelViewSet):
@@ -18,6 +21,13 @@ class ProductAPIView(ModelViewSet):
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name', 'description')
 
+    @action(detail=True, methods=['GET'])
+    def top_products(self, request, *args, **kwargs):
+        products = self.queryset.order_by('-price')[:5]
+        serializer = ProductSerializer(products, many=True)
+        return Response(serializer.data)
+
+
 class CategoryAPIView(ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
@@ -26,6 +36,14 @@ class CategoryAPIView(ModelViewSet):
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name', 'description')
 
+    @action(detail=True, methods=['GET'])
+    def categories(self, request, *args, **kwargs):
+        categories = Category.objects.all()
+        page = self.paginate_queryset(categories)
+        serializer = self.get_serializer(page, many=True)
+        return self.get_paginated_response(serializer.data)
+
+
 class CommentAPIView(ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
@@ -33,6 +51,13 @@ class CommentAPIView(ModelViewSet):
     authentication_classes = (TokenAuthentication,)
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name', 'description')
+
+    @action(detail=True, methods=['GET'])
+    def top_comments_like(self, request, *args, **kwargs):
+        comments = self.queryset.order_by('-created_at')[:5]
+        serializer = CommentSerializer(comments, many=True)
+        return Response(serializer.data)
+
 
 class CartAPIView(ModelViewSet):
     queryset = Cart.objects.all()

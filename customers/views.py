@@ -10,6 +10,9 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from products.models import Category, Comment, Product, Cart
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework import status
 
 # Create your views here.
 
@@ -21,6 +24,15 @@ class CountryAPIView(ModelViewSet):
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
 
+    @action(detail=True, methods=['GET'])
+    def search(self, request, *args, **kwargs):
+        country = self.request.query_params.get('country', None)
+        if country:
+            queryset = Country.objects.filter(name__icontains=country)
+            serializer = CountrySerializer(queryset, many=True)
+            return Response(serializer.data)
+
+
 class CityAPIView(ModelViewSet):
     queryset = City.objects.all()
     serializer_class = CitySerializer
@@ -28,6 +40,15 @@ class CityAPIView(ModelViewSet):
     authentication_classes = (TokenAuthentication, )
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
+
+    @action(detail=True, methods=['GET'])
+    def search(self, request, *args, **kwargs):
+        city = self.request.query_params.get('city', None)
+        if city:
+            queryset = City.objects.filter(name__icontains=city)
+            serializer = CitySerializer(queryset, many=True)
+            return Response(serializer.data)
+
 
 class AddressAPIView(ModelViewSet):
     queryset = Address.objects.all()
@@ -44,6 +65,13 @@ class CustomersAPIView(ModelViewSet):
     authentication_classes = (TokenAuthentication, )
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
+
+    @action(detail=True, methods=['GET'])
+    def user_id(self, request, *args, **kwargs):
+        user_id = request.user.id
+        queryset = Customers.objects.filter(user_id=user_id)
+        serializer = CustomersSerializer(queryset, many=True)
+        return Response(serializer.data)
 
 class LandingPageView(View):
     def get(self, request):

@@ -17,5 +17,12 @@ class Songs(models.Model):
     title = models.CharField(max_length=100)
     cover = models.URLField(null=True)
     albom = models.ForeignKey(Albom, on_delete=models.CASCADE, null=True)
+    listened = models.PositiveIntegerField(default=0)
     last_updated = models.DateTimeField(auto_now=True)
     create_date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-id']
+        indexes = [
+            models.Index(fields=['id']),
+        ]

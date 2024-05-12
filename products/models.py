@@ -1,4 +1,6 @@
 from django.db import models
+
+from api.models import Product
 from customers.models import Customers
 from .helps import SaveMediaFile, PriceType, WeightType
 from django.contrib.auth.models import User
@@ -10,6 +12,7 @@ class Comment(models.Model):
     customer = models.ForeignKey(Customers, on_delete=models.CASCADE)
     created_date = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
+    top_comment = models.TextField()
 
     def __str__(self):
         return self.text[:10]
@@ -20,6 +23,7 @@ class Category(models.Model):
     image = models.ImageField(upload_to=SaveMediaFile.category_image_path)
     created_date = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
+    category = models.CharField(max_length=50)
 
     def __str__(self):
         return self.title
@@ -41,6 +45,7 @@ class Product(models.Model):
     comments = models.ManyToManyField(Comment, null=True, blank=True)
     created_date = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
+    top_products = models.ManyToManyField(Product, null=True, blank=True)
 
     def __str__(self):
         return self.title
